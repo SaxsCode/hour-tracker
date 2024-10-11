@@ -1,0 +1,5 @@
+{
+    "require": {
+        "spatie/file-system-watcher": "^1.2"
+    }
+}
