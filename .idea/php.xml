@@ -12,6 +12,9 @@
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="" />
+      <path value="$PROJECT_DIR$/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/spatie/file-system-watcher" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

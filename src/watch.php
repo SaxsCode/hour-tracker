@@ -18,10 +18,11 @@ Watch::path(DIRECTORY)
                 return;
             }
 
-            $path = str_replace(DIRECTORY, '', $path);
+            $path = str_replace(DIRECTORY . '\\', '', $path);
             $path = str_replace(["\n", "\r"], '', $path);
 
             writeLog($path, $type);
+            writeOverview($path);
         }
     })
     ->start();
@@ -63,4 +64,34 @@ function writeLog(string $path, string $type): void
     fclose($log);
 
     echo date('H:i:s') . " - Logged activity", PHP_EOL;
+}
+
+function writeOverview(string $path): void
+{
+    $filename = realpath(__DIR__ . '/../log') . "/" .  date('Y-m-d') . "_overview.txt";
+    $project = explode("\\", $path)[0];
+
+    if (file_exists($filename)) {
+        $lines = file($filename);
+        $last_line = $lines[count($lines)-1];
+
+        if(!empty($last_line))
+        {
+            $currentProject = explode("- ", $last_line)[1];
+            $currentProject = str_replace(["\n", "\r"], '', $currentProject);
+
+            if ($project === $currentProject)
+            {
+                return;
+            }
+        }
+    }
+
+    $overview = fopen($filename, "a");
+    fwrite($overview, date('H:i:s') . " - {$project}\n");
+    fclose($overview);
+
+    echo $overview;
+
+    echo date('H:i:s') . " - Written in overview", PHP_EOL;
 }
