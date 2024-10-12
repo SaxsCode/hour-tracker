@@ -1,4 +1,3 @@
-# hour-tracker
-## test
+# Hour tracker
 
-#tes
+Watch any changes in given path
