@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 const DIRECTORY = 'C:\Users\maxsa\Documents\projects';
+define("FILE_NAME", realpath(__DIR__ . '/../log') . "/" . date('Y-m-d'));
 
 use Spatie\Watcher\Watch;
 
@@ -64,7 +65,7 @@ function shouldIgnorePath(string $path, string $type): bool
  */
 function writeLog(string $path, string $type): void
 {
-    $log = fopen(realpath(__DIR__ . '/../log') . "/" .  date('Y-m-d') . "_log.txt", "a");
+    $log = fopen(FILE_NAME . "_log.txt", "a");
     fwrite($log, date('H:i:s') . ": {$path} - {$type}\n");
     fclose($log);
 
@@ -78,8 +79,9 @@ function writeLog(string $path, string $type): void
  */
 function writeOverview(string $path): void
 {
-    $filename = realpath(__DIR__ . '/../log') . "/" .  date('Y-m-d') . "_overview.txt";
+    $filename = FILE_NAME . "_overview.txt";
     $project = explode("\\", $path)[0];
+    $currentTime = date('H:i:s');
 
     if (file_exists($filename)) {
         $lines = file($filename);
@@ -98,10 +100,8 @@ function writeOverview(string $path): void
     }
 
     $overview = fopen($filename, "a");
-    fwrite($overview, date('H:i:s') . " - {$project}\n");
+    fwrite($overview, $currentTime . " - {$project}\n");
     fclose($overview);
 
-    echo $overview;
-
-    echo date('H:i:s') . " - Written in overview", PHP_EOL;
+    echo $currentTime . " - Written in overview", PHP_EOL;
 }
