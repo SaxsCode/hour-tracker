@@ -1,10 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';
+const DIRECTORY = 'C:\Users\maxsa\Documents\projects';
 
 use Spatie\Watcher\Watch;
-
-const DIRECTORY = 'C:\Users\maxsa\Documents\projects';
 
 echo "WATCHING...", PHP_EOL;
 
@@ -28,6 +27,12 @@ Watch::path(DIRECTORY)
     ->start();
 
 
+/**
+ * Get paths from pathSrtring and return as array
+ * @param string $pathString
+ * @param string $type
+ * @return string[]
+ */
 function getPaths(string $pathString, string $type): array {
     $paths = [$pathString];
 
@@ -52,7 +57,7 @@ function shouldIgnorePath(string $path, string $type): bool
 }
 
 /**
- * Create log file to store changes
+ * Create log file to store all changes
  * @param string $path
  * @param string $type
  * @return void
@@ -66,6 +71,11 @@ function writeLog(string $path, string $type): void
     echo date('H:i:s') . " - Logged activity", PHP_EOL;
 }
 
+/**
+ * Create overview file to store changed projects with timestamps
+ * @param string $path
+ * @return void
+ */
 function writeOverview(string $path): void
 {
     $filename = realpath(__DIR__ . '/../log') . "/" .  date('Y-m-d') . "_overview.txt";
