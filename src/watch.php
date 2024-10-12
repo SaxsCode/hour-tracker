@@ -1,26 +1,29 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';
-const DIRECTORY = 'C:\Users\maxsa\Documents\projects';
-define("FILE_NAME", realpath(__DIR__ . '/../log') . "/" . date('Y-m-d'));
+$settings = require __DIR__ . '/settings.php';
 
 use Spatie\Watcher\Watch;
 
+define("FILE_NAME", $settings['LOG_DIR'] . "/" . date('Y-m-d'));
+
+if (empty($settings['DIRECTORY'])) {
+    echo "SET THE DIRECTORY YOU WANT TO WATCH IN settings.php" . PHP_EOL;
+    exit(1);
+}
+
 echo "WATCHING...", PHP_EOL;
 
-Watch::path(DIRECTORY)
-    ->onAnyChange(function (string $type, string $pathString) {
-
+Watch::path($settings['DIRECTORY'])
+    ->onAnyChange(function (string $type, string $pathString) use ($settings) {
         $paths = getPaths($pathString, $type);
 
         foreach ($paths as $path) {
-            if(shouldIgnorePath($path, $type)) {
-                return;
+            if(shouldIgnorePath($path, $settings['IGNORED_FOLDERS'])) {
+                continue;
             }
 
-            $path = str_replace(DIRECTORY . '\\', '', $path);
-            $path = str_replace(["\n", "\r"], '', $path);
-
+            $path = cleanPath($path, $settings['DIRECTORY']);
             writeLog($path, $type);
             writeOverview($path);
         }
@@ -49,16 +52,29 @@ function getPaths(string $pathString, string $type): array {
  * @param string $path
  * @return bool
  */
-function shouldIgnorePath(string $path, string $type): bool
+function shouldIgnorePath(string $path, array $ignoredFolders): bool
 {
-    $folders = ['.idea', '.git', '.vscode', 'log'];
-    $pattern = '/[\/\\\\](' . implode('|', array_map('preg_quote', $folders)) . ')[\/\\\\]/';
+    $pattern = '/[\/\\\\](' . implode('|', array_map('preg_quote', $ignoredFolders)) . ')[\/\\\\]/';
 
     return preg_match($pattern, $path) === 1;
 }
 
 /**
- * Create log file to store all changes
+ * Remove directory path and newlines from entire path
+ * @param string $path
+ * @return string
+ */
+function cleanPath(string $path, string $directory): string
+{
+    return str_replace(
+        [$directory . '\\', "\n", "\r"],
+        ['', '', ''],
+        $path
+    );
+}
+
+/**
+ * Create ht_logs file to store all changes
  * @param string $path
  * @param string $type
  * @return void
