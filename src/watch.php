@@ -5,7 +5,7 @@ $settings = require __DIR__ . '/settings.php';
 
 use Spatie\Watcher\Watch;
 
-define("FILE_NAME", $settings['LOG_DIR'] . "/" . date('Y-m-d'));
+define("FILE_NAME", $settings['LOG_DIR'] . "\\" . date('Y-m-d'));
 
 if (empty($settings['DIRECTORY'])) {
     echo "SET THE DIRECTORY YOU WANT TO WATCH IN settings.php" . PHP_EOL;
@@ -24,6 +24,10 @@ Watch::path($settings['DIRECTORY'])
             }
 
             $path = cleanPath($path, $settings['DIRECTORY']);
+            if (!is_dir($settings['LOG_DIR']))
+            {
+                mkdir($settings['LOG_DIR'],0755, true);
+            }
             writeLog($path, $type);
             writeOverview($path);
         }
