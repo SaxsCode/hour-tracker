@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 $settings = require __DIR__ . '/settings.php';
+date_default_timezone_set('Europe/Amsterdam');
 
 use Spatie\Watcher\Watch;
 
@@ -12,7 +13,7 @@ if (empty($settings['DIRECTORY'])) {
     exit(1);
 }
 
-echo "WATCHING...", PHP_EOL;
+echo "WATCHING..", PHP_EOL;
 
 Watch::path($settings['DIRECTORY'])
     ->onAnyChange(function (string $type, string $pathString) use ($settings) {
